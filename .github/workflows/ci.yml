@@ -16,6 +16,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug Secret Visibility
+      run: |
+        if [ -z "${{ secrets.AZURE_CREDENTIALS }}" ]; then
+          echo "ERROR: AZURE_CREDENTIALS secret is EMPTY or NOT FOUND"
+          exit 1
+        else
+          echo "Secret found, proceeding to login..."
+        fi
+
     - name: Azure Login
       uses: azure/login@v1
       with:
