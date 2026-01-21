@@ -28,8 +28,8 @@ jobs:
     - name: Set Azure ML defaults
       run: |
         az configure --defaults \
-          workspace=faizankhawar \
-          group=ml-resource-azure \
+          workspace=azure-ml \
+          group=klaus-rg \
           location=eastus2
 
     - name: Set up Python
