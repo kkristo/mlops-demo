@@ -1,0 +1,53 @@
+name: Azure ML CI Demo
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        auth-type: 'SERVICE_PRINCIPAL'
+
+    - name: Set Azure ML defaults
+      run: |
+        az configure --defaults \
+          workspace=faizankhawar \
+          group=ml-resource-azure \
+          location=eastus2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install scikit-learn joblib azure-ai-ml
+
+    - name: Train model
+      run: |
+        python train.py
+
+    - name: Register model to Azure ML
+      run: |
+        az extension add -n ml -y
+        az ml model create \
+          --name iris-demo-model \
+          --path outputs/model.pkl \
+          --type custom_model
