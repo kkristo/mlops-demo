@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 import os
 
-print("Loading Iris dataset")
+print("Loading Iris dataset test")
 
 # 1. Load data
 X, y = load_iris(return_X_y=True)
